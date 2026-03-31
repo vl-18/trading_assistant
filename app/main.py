@@ -1,3 +1,4 @@
+from data.finnhub_news import get_news_finnhub
 from models.predict import predict
 from app.state import (
     TechnicalIndicators,
@@ -9,6 +10,14 @@ from agents.decision_agent import decision_agent
 from strategy.guard import strategy_guard
 
 import yfinance as yf
+
+import requests
+import os
+from dotenv import load_dotenv
+from app.state import NewsData
+from data.finnhub_news import get_news_finnhub
+
+load_dotenv()
 
 
 def get_technicals(symbol: str) -> TechnicalIndicators:
@@ -45,18 +54,6 @@ def get_technicals(symbol: str) -> TechnicalIndicators:
     )
 
 
-def get_news(symbol: str) -> NewsData:
-    """
-    TEMP: Mock news (replace later with real API)
-    """
-
-    return NewsData(headlines=[
-        f"{symbol} shows recent market movement",
-        f"Investors reacting to latest trends in {symbol}",
-        f"Sector outlook remains uncertain"
-    ])
-
-
 def get_risk() -> dict:
     """
     TEMP: simple risk logic (replace later with agent)
@@ -90,7 +87,7 @@ def run_pipeline(symbol: str = "TCS.NS"):
     # =========================
     # 3. News Agent
     # =========================
-    news = get_news(symbol)
+    news = get_news_finnhub(symbol)
     sentiment = news_agent(news)
     print("Sentiment:", sentiment)
 
